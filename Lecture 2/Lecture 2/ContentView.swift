@@ -37,17 +37,6 @@ struct ContentView: View {
         .font(.largeTitle)
     }
     
-    func cardCountAdjuster(by offset: Int, symbols: String) -> some View {
-        Button(action: {
-            if (cardCount > 1) {
-                cardCount += offset
-            }
-        }, label: {
-            Image(systemName: symbols)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > halloweenEmojis.count)
-    }
-    
     func cardThemeChanger(emojis: Array<String>) -> some View {
         Button(action: {
             selectedEmojis = emojis
