@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["👻", "🎃", "🕷️", "👿"]
+    let halloweenEmojis = ["👻", "🎃", "🕷️", "👿"]
+    let animalEmojis = ["🐶","🐭","🐱","🦊"]
+    let vehicleEmojis = ["🚗","🚕","🚙","🚌"]
+    @State var selectedEmojis: Array<String> = ["👻", "🎃", "🕷️", "👿"]
     @State var cardCount: Int = 4
     var body: some View {
         VStack {
-            Text("Memorize!")
+            Text("Memorize!").font(.largeTitle)
             ScrollView{
                 cards
             }
@@ -24,9 +27,11 @@ struct ContentView: View {
     
     var cardCountAdjusters: some View {
         HStack(){
-            cardRemover
+            halloweenCardsButton
             Spacer()
-            cardAdder
+            carsCardsButton
+            Spacer()
+            animalsCardsButton
         }
         .imageScale(.large)
         .font(.largeTitle)
@@ -40,23 +45,35 @@ struct ContentView: View {
         }, label: {
             Image(systemName: symbols)
         })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+        .disabled(cardCount + offset < 1 || cardCount + offset > halloweenEmojis.count)
     }
     
+    func cardThemeChanger(emojis: Array<String>) -> some View {
+        Button(action: {
+            selectedEmojis = emojis
+        }, label: {
+            Text(emojis[0])
+        })
+    }
+    
+    var halloweenCardsButton: some View {
+        cardThemeChanger(emojis: halloweenEmojis)
+    }
+    
+    var carsCardsButton: some View {
+        cardThemeChanger(emojis: vehicleEmojis)
+    }
+    
+    var animalsCardsButton: some View {
+        cardThemeChanger(emojis: animalEmojis)
+    }
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
             ForEach(0..<cardCount, id: \.self) { index in
-                CardWithEmoji(content: emojis[index])
+                CardWithEmoji(content: selectedEmojis[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }.foregroundColor(.orange)
-    }
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbols: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: +1, symbols: "rectangle.stack.badge.plus.fill")
     }
 }
 
