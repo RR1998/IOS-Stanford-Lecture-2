@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    let halloweenEmojis = ["👻", "🎃", "🕷️", "👿"]
-    let animalEmojis = ["🐶","🐭","🐱","🦊"]
-    let vehicleEmojis = ["🚗","🚕","🚙","🚌"]
-    @State var selectedEmojis: Array<String> = ["👻", "🎃", "🕷️", "👿"]
-    @State var cardCount: Int = 4
+struct LectureTwoView: View {
+
+    @ObservedObject var viewModel = LectureTwoViewModel()
+    
     var body: some View {
         VStack {
             Text("Memorize!").font(.largeTitle)
@@ -37,29 +35,34 @@ struct ContentView: View {
         .font(.largeTitle)
     }
     
-    func cardThemeChanger(emojis: Array<String>) -> some View {
+    func cardThemeChanger(buttonTitle: String, emojis: Array<String>) -> some View {
         Button(action: {
-            selectedEmojis = emojis
+            viewModel.onSelectedEmoji(emojis: emojis)
         }, label: {
-            Text(emojis[0])
+            VStack{
+                Text(emojis[0])
+                Text(buttonTitle)
+                    .font(.footnote)
+            }
         })
     }
     
     var halloweenCardsButton: some View {
-        cardThemeChanger(emojis: halloweenEmojis)
+        cardThemeChanger(buttonTitle: "Halloween", emojis: viewModel.halloweenEmojis)
     }
     
     var carsCardsButton: some View {
-        cardThemeChanger(emojis: vehicleEmojis)
+        cardThemeChanger(buttonTitle: "Vehicle", emojis: viewModel.vehicleEmojis)
     }
     
     var animalsCardsButton: some View {
-        cardThemeChanger(emojis: animalEmojis)
+        cardThemeChanger(buttonTitle: "Animal", emojis: viewModel.animalEmojis)
     }
+    
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardWithEmoji(content: selectedEmojis[index])
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
+            ForEach(0..<viewModel.cardCount, id: \.self) { index in
+                CardWithEmoji(content: viewModel.selectedEmojis[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }.foregroundColor(.orange)
@@ -87,5 +90,5 @@ struct CardWithEmoji: View {
 }
 
 #Preview {
-    ContentView()
+    LectureTwoView()
 }
